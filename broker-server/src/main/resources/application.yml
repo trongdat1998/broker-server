@@ -1,0 +1,167 @@
+env:
+  # env of running: prod|test|benchmark
+  profile: test
+
+server:
+  port: 7123
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: ./logs/
+    basedir: ./
+
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-active: 200
+        max-idle: 50
+        max-wait: 4s
+    timeout: 10s
+    cluster:
+      nodes:
+        - broker-server-redis:6379
+  application:
+    name: bhex-broker-server
+  datasource:
+    primary:
+      type: io.bhex.base.mysql.BHMysqlDataSource
+      url: jdbc:mysql://broker-server-db:3306/broker?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=UTC
+      username: broker-server-write
+      password: xxxxxx
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        maximum-pool-size: 300
+        minimum-idle: 30
+        max-lifetime: 30000
+        connectionInitSql: select 1 from dual
+    statistics:
+      type: io.bhex.base.mysql.BHMysqlDataSource
+      url: jdbc:mysql://broker-server-db:3306/statistics?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=UTC
+      username: broker-server-write
+      password: xxxxxx
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        maximum-pool-size: 300
+        minimum-idle: 30
+        max-lifetime: 30000
+        connectionInitSql: select 1 from dual
+    clear:
+      type: io.bhex.base.mysql.BHMysqlDataSource
+      url: jdbc:mysql://broker-clear-db:3306/clear?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=UTC
+      username: clear-server-write
+      password: xxxxxx
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        maximum-pool-size: 300
+        minimum-idle: 30
+        max-lifetime: 30000
+        connectionInitSql: select 1 from dual
+  tracing:
+    #default value is true
+    enable-tracing: true
+    #the reporter's address to zipkin
+    reporter.zipkin.url: http://127.0.0.1:9411/api/v2/spans
+
+  rocketmq:
+    name-servers: mq-namesrv.bluehelix:9876;mq-namesrv-s.bluehelix:9876
+    producer-group: trade-producer-group
+  elasticsearch:
+    rest:
+      uris: http://elasticsearch-master.default:9200
+
+grpc:
+  port: 7023
+  server-worker-count: 200
+  client-worker-count: 200
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    default-statement-timeout: 10
+
+logging:
+  config: classpath:logback.xml
+
+broker:
+  proxy: false
+  grpc-client:
+    stub-deadline: 5500
+    short-stub-deadline: 2000
+    channel-info:
+      - channel-name: 'bhServer'
+        host: 'bh-server.bluehelix'
+        port: 7011
+        use-ssl: false
+      - channel-name: 'bhSubServer'
+        host: 'bh-server-sub.bluehelix'
+        port: 7011
+      - channel-name: 'securityServer'
+        host: 'broker-security'
+        port: 7022
+        use-ssl: false
+      - channel-name: 'commonServer'
+        host: 'common-server'
+        port: 7220
+        use-ssl: false
+      - channel-name: 'otcServer'
+        host: 'otc-server'
+        port: 7231
+        useSsl: false
+      - channel-name: 'saasAdminServer'
+        host: 'saas-admin-server'
+        port: 7401
+        use-ssl: false
+      - channel-name: 'quoteDataServer'
+        host: 'quote-data-service.exchange'
+        port: 7063
+        use-ssl: false
+      - channel-name: 'marginServer'
+        host: 'margin-server.bluehelix'
+        port: 7232
+        use-ssl: false
+  # 是否选择tencent作为一级kyc验证
+  is-tencent-kyc: false
+  # 捷安一级kyc验证
+  jiean:
+    cust-id: XXX
+    mac-key: XXX
+    id-card-verify-url: http://api.jieancredit.com/vpre/ccmn/verify
+    bank-card-verify-url: http://api.jieancredit.com/vpre/ccmn/verify
+    conn-timeout: 5000
+    read-timeout: 5000
+  # tencent一级kyc验证
+  tencent:
+     secret-id: XXX
+     secret-key: XXX
+     source: "market"
+     id-card-verify-url: "https://service-hnjqejfo-1302737941.gz.apigw.tencentcs.com/release/verify/bidverify2"
+  aws:
+    bucket: private.headsc.dev
+    access-key: XXX
+    secret-key: XXX
+    region-name: ap-southeast-1
+    url-prefix-list: ['https://static.headsc.dev/']
+#  webank:
+#    idasc-url: xxx
+#    ida-url: xxx
+  asyncTaskExecutorPoolConfig:
+    corePoolSize: 20
+    maxPoolSize: 50
+    queueCapacity: 500
+  statisticsTaskExecutorPoolConfig:
+    corePoolSize: 20
+    maxPoolSize: 40
+    queueCapacity: 200
+  orgRequestHandleTaskExecutorPoolConfig:
+    corePoolSize: 30
+    maxPoolSize: 60
+    queueCapacity: 200
+  userRequestHandleTaskExecutorPoolConfig:
+    corePoolSize: 100
+    maxPoolSize: 200
+    queueCapacity: 400
+verify-captcha: true  #当不校验时，验证码实际不发送且无发送纪录，且默认123456有效
+global-notify-type: 3  #全局强制通知类型 1：all, 2：仅手机, 3：仅邮箱
+

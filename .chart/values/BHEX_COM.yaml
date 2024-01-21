@@ -1,0 +1,22 @@
+# 资源配置
+resources:
+  # 限额
+  limits:
+    # CPU时间片上线，默认为3500m
+    cpu: 7000m
+    # 内存上线，默认为3600Mi
+    memory: 6000Mi
+  # 请求值
+  requests:
+    # 请求的CPU资源，默认为900m
+    cpu: 1400m
+    # 请求的内存资源，默认为3000Mi
+    memory: 5500Mi
+env:
+  # 定制Java内存参数
+  JAVA_HEAP_OPTS: "-Xmx4G -Xms4G"
+  # 定制额外的JAVA启动参数，如-Dprofile=production
+  JAVA_OPTS: "-Dspring.profiles.active=bhex_com"
+
+envFromSecrets:
+- ENCRYPT_PRIVATEKEY_PASSWORD

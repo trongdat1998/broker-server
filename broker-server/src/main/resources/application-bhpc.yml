@@ -1,0 +1,22 @@
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-active: 200
+        max-idle: 50
+        max-wait: 4s
+    timeout: 10s
+    cluster:
+      nodes:
+        - broker-server-redis:6379
+broker:
+  aws:
+    bucket: private.nucleex.com
+    access-key: XXX
+    secret-key: XXX
+    region-name: ap-southeast-1
+    url-prefix-list: ['https://static.nucleex.com/']
+  is-preview: false
+  webank:
+    idasc-url: https://idasc.webank.com
+    ida-url: https://ida.webank.com

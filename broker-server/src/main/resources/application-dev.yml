@@ -1,0 +1,126 @@
+broker:
+    asyncTaskExecutorPoolConfig:
+        corePoolSize: 20
+        maxPoolSize: 50
+        queueCapacity: 500
+    aws:
+        access-key: XXX
+        bucket: private.headsc.dev
+        region-name: ap-southeast-1
+        secret-key: XXX
+        url-prefix-list: '[https://static.headsc.dev/]'
+    grpc-client:
+        channel-info: '[{channel-name=bhServer, host=localhost, port=7011, use-ssl=false},
+            {channel-name=bhSubServer, host=localhost, port=7099}, {channel-name=securityServer,
+            host=localhost, port=7022, use-ssl=false}, {channel-name=commonServer,
+            host=localhost, port=7220, use-ssl=false}, {channel-name=otcServer, host=localhost,
+            port=7231, useSsl=false}, {channel-name=saasAdminServer, host=localhost,
+            port=7401, use-ssl=false}, {channel-name=quoteDataServer, host=localhost,
+            port=7063, use-ssl=false}, {channel-name=marginServer, host=localhost,
+            port=7232, use-ssl=false}]'
+        short-stub-deadline: 2000
+        stub-deadline: 5500
+    is-tencent-kyc: false
+    jiean:
+        bank-card-verify-url: http://api.jieancredit.com/vpre/ccmn/verify
+        conn-timeout: 5000
+        cust-id: XXX
+        id-card-verify-url: http://api.jieancredit.com/vpre/ccmn/verify
+        mac-key: XXX
+        read-timeout: 5000
+    orgRequestHandleTaskExecutorPoolConfig:
+        corePoolSize: 30
+        maxPoolSize: 60
+        queueCapacity: 200
+    proxy: false
+    statisticsTaskExecutorPoolConfig:
+        corePoolSize: 20
+        maxPoolSize: 40
+        queueCapacity: 200
+    tencent:
+        id-card-verify-url: https://service-hnjqejfo-1302737941.gz.apigw.tencentcs.com/release/verify/bidverify2
+        secret-id: XXX
+        secret-key: XXX
+        source: market
+    userRequestHandleTaskExecutorPoolConfig:
+        corePoolSize: 100
+        maxPoolSize: 200
+        queueCapacity: 400
+env:
+    profile: test
+global-notify-type: 3
+grpc:
+    client-worker-count: 200
+    port: 7023
+    server-worker-count: 200
+logging:
+    config: classpath:logback.xml
+mybatis:
+    configuration:
+        default-statement-timeout: 10
+        map-underscore-to-camel-case: true
+server:
+    port: 7123
+    tomcat:
+        accesslog:
+            directory: ./logs/
+            enabled: true
+        basedir: ./
+spring:
+    application:
+        name: bhex-broker-server
+    datasource:
+        clear:
+            driver-class-name: com.mysql.jdbc.Driver
+            hikari:
+                connectionInitSql: select 1 from dual
+                max-lifetime: 30000
+                maximum-pool-size: 300
+                minimum-idle: 30
+            password: u9P4gBFJLzbyQECM
+            type: io.bhex.base.mysql.BHMysqlDataSource
+            url: jdbc:mysql://clear.cluster-cyoxblx18bcs.ap-southeast-1.rds.amazonaws.com:3306/clear?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=UTC
+            username: clear
+        primary:
+            driver-class-name: com.mysql.jdbc.Driver
+            hikari:
+                connectionInitSql: select 1 from dual
+                max-lifetime: 30000
+                maximum-pool-size: 300
+                minimum-idle: 30
+            password: vY?h)9~JkR:qG^pr
+            type: io.bhex.base.mysql.BHMysqlDataSource
+            url: jdbc:mysql://broker-instance-1.cyoxblx18bcs.ap-southeast-1.rds.amazonaws.com:3306/broker?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=UTC
+            username: broker
+        statistics:
+            driver-class-name: com.mysql.jdbc.Driver
+            hikari:
+                connectionInitSql: select 1 from dual
+                max-lifetime: 30000
+                maximum-pool-size: 300
+                minimum-idle: 30
+            password: vY?h)9~JkR:qG^pr
+            type: io.bhex.base.mysql.BHMysqlDataSource
+            url: jdbc:mysql://broker-instance-1.cyoxblx18bcs.ap-southeast-1.rds.amazonaws.com:3306/statistics?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=UTC
+            username: broker
+    elasticsearch:
+        rest:
+            uris: 127.0.0.1:9200
+    redis:
+        cluster:
+            nodes: '[cluster-redis-dev.tw6hzg.clustercfg.apse1.cache.amazonaws.com:6379]'
+        lettuce:
+            pool:
+                max-active: 200
+                max-idle: 50
+                max-wait: 4s
+        timeout: 10s
+    rocketmq:
+        name-servers: 192.168.166.15:9876
+        producer-group: trade-producer-group
+    tracing:
+        enable-tracing: true
+        reporter:
+            zipkin:
+                url: http://127.0.0.1:9411/api/v2/spans
+verify-captcha: true
